@@ -141,6 +141,14 @@ export default {
       required: false,
       default: Infinity
     },
+    highlightFirstSuggestion: {
+      type: Boolean,
+      default: false
+    },
+    persistHighlighted: {
+      type: Boolean,
+      default: false
+    },
     suggestions: {
       type: Array,
       required: true
@@ -370,6 +378,13 @@ export default {
         }
       },
       immediate: true
+    },
+    suggestions: {
+      handler(newValue){
+        if (this.highlightFirstSuggestion && newValue.length > 0) {
+          this.setCurrentIndex(1, this.totalResults);
+        }
+      }
     }
   },
   created() {
@@ -628,7 +643,7 @@ export default {
       /* Clicks outside of dropdown */
       if (!isChild) {
         this.loading = true;
-        this.currentIndex = null;
+        (!this.persistHighlighted) && (this.currentIndex = null);
         return;
       }
 
